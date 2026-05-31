@@ -3,6 +3,9 @@ dist
 dist-ssr
 e2e-out.txt
 e2e-live.txt
+
+# Local-only draft, not for publishing
+blog-text.md
 *.local
 .DS_Store
 .vite
