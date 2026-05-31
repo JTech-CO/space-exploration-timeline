@@ -2,6 +2,7 @@ node_modules
 dist
 dist-ssr
 e2e-out.txt
+e2e-live.txt
 *.local
 .DS_Store
 .vite
