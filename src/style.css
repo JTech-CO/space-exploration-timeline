@@ -1,0 +1,472 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   Space Exploration Timeline
+   Editorial, near-monochrome. One warm accent. The ascent from ground to deep
+   space is carried by the background colour and read-out, not by ornament.
+   ────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  --text: #e9e5db;
+  --muted: #98a1b1;
+  --faint: #6b7689;
+  --accent: #d98c4a;
+  --accent-soft: rgba(217, 140, 74, 0.28);
+  --rail: #29313e;
+  --rail-strong: #3a4452;
+
+  --maxw: 680px;
+  --gutter: 24px;
+  --year-col: 62px;
+
+  --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR",
+    "Yu Gothic", "Meiryo", "Noto Sans JP", Arial, sans-serif;
+  --serif: ui-serif, Georgia, "Times New Roman", "Nanum Myeongjo",
+    "Yu Mincho", serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: #05070e;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text);
+  background: transparent;
+  opacity: 0;
+  transition: opacity 0.4s ease-out;
+  overflow-x: hidden;
+}
+
+body.is-ready {
+  opacity: 1;
+}
+
+/* ── Fixed scene layers ──────────────────────────────────────────────────── */
+
+.scene-bg,
+.scene-stars,
+.scene-earth {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+.scene-bg {
+  z-index: -3;
+  background: linear-gradient(to top, #161009 0%, #0c1019 55%, #03050c 100%);
+}
+
+.scene-stars {
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+.scene-earth {
+  z-index: -1;
+  left: 50%;
+  bottom: -86vh;
+  width: 220vw;
+  height: 220vw;
+  max-width: 3400px;
+  max-height: 3400px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 34%,
+    #0a1422 0%,
+    #060c16 42%,
+    #03060e 72%
+  );
+  box-shadow:
+    inset 0 7px 20px -3px rgba(126, 172, 255, 0.22),
+    inset 0 2px 2px 0 rgba(150, 190, 255, 0.14),
+    0 0 70px 4px rgba(70, 120, 210, 0.08);
+  opacity: 0;
+}
+
+/* ── Top bar ─────────────────────────────────────────────────────────────── */
+
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px clamp(16px, 4vw, 36px);
+}
+
+.topbar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(3, 5, 11, 0.72), rgba(3, 5, 11, 0));
+  pointer-events: none;
+  z-index: -1;
+}
+
+.brand {
+  font-family: var(--serif);
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  color: var(--text);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.langs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.lang-btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 13px;
+  line-height: 1;
+  padding: 7px 9px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  transition:
+    color 0.15s ease-out,
+    background-color 0.15s ease-out;
+}
+
+.lang-btn:hover {
+  color: var(--text);
+}
+
+.lang-btn[aria-pressed="true"] {
+  color: var(--text);
+  background: rgba(217, 140, 74, 0.12);
+  box-shadow: inset 0 0 0 1px var(--accent-soft);
+}
+
+.lang-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ── Altitude / era read-out ─────────────────────────────────────────────── */
+
+.readout {
+  position: fixed;
+  left: clamp(16px, 4vw, 36px);
+  bottom: 18px;
+  z-index: 20;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 12.5px;
+  color: var(--muted);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+}
+
+.readout__year {
+  font-family: var(--serif);
+  font-size: 18px;
+  color: var(--text);
+  font-variant-numeric: lining-nums;
+}
+
+.readout__sep {
+  color: var(--rail-strong);
+}
+
+.readout__alt {
+  color: var(--faint);
+}
+
+/* ── Timeline column ─────────────────────────────────────────────────────── */
+
+.timeline {
+  position: relative;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 clamp(18px, 5vw, 28px);
+}
+
+/* the continuous trajectory line */
+.timeline__rail {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(clamp(18px, 5vw, 28px) + var(--year-col));
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    rgba(58, 68, 82, 0) 0%,
+    var(--rail) 4%,
+    var(--rail) 96%,
+    rgba(58, 68, 82, 0) 100%
+  );
+}
+
+.row {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--year-col) 1fr;
+  column-gap: var(--gutter);
+  align-items: baseline;
+}
+
+/* node on the rail */
+.row::before {
+  content: "";
+  position: absolute;
+  left: var(--year-col);
+  transform: translateX(-50%);
+  top: 0.72em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--rail-strong);
+}
+
+.row--event::before {
+  width: 7px;
+  height: 7px;
+  background: var(--accent);
+  top: 0.62em;
+}
+
+.row__year {
+  font-family: var(--serif);
+  text-align: right;
+  color: var(--faint);
+  font-variant-numeric: lining-nums;
+}
+
+.row__body {
+  color: var(--text);
+  max-width: 46ch;
+}
+
+/* compact "ruler" rows for empty years */
+.row--tick {
+  padding: 6px 0;
+}
+
+.row--tick .row__year {
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+/* years carrying an event */
+.row--event {
+  padding: 17px 0;
+}
+
+.row--event .row__year {
+  font-size: 27px;
+  line-height: 1.05;
+  color: var(--text);
+  letter-spacing: 0.01em;
+}
+
+/* ── Markers (real altitude crossings) & the rocket-age divider ──────────── */
+
+.marker,
+.divider {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-left: calc(var(--year-col) + var(--gutter));
+}
+
+.marker {
+  padding: 26px 0 24px;
+  color: var(--accent);
+  font-size: 11.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.marker::before,
+.marker::after {
+  content: "";
+  height: 1px;
+  background: var(--accent-soft);
+}
+
+.marker::before {
+  width: 22px;
+  flex: 0 0 auto;
+}
+
+.marker::after {
+  flex: 1;
+}
+
+.divider {
+  padding: 30px 0 28px;
+  color: var(--muted);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 15px;
+}
+
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--rail);
+}
+
+/* ── Hero (bottom — first thing seen) ────────────────────────────────────── */
+
+.hero {
+  min-height: 86vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 64px clamp(18px, 5vw, 28px) 56px;
+  max-width: var(--maxw);
+  margin: 0 auto;
+}
+
+.hero__title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(36px, 8vw, 66px);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  margin: 0 0 18px;
+  color: var(--text);
+}
+
+.hero__tagline {
+  margin: 0 auto 40px;
+  max-width: 36ch;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.hero__hint {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.hero__chev {
+  width: 18px;
+  height: 18px;
+  border-left: 1.5px solid var(--accent);
+  border-top: 1.5px solid var(--accent);
+  transform: rotate(45deg);
+}
+
+/* ── Closing (top — after 2026) ──────────────────────────────────────────── */
+
+.closing {
+  min-height: 68vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 96px clamp(18px, 5vw, 28px) 64px;
+  max-width: var(--maxw);
+  margin: 0 auto;
+}
+
+.closing__lead {
+  font-family: var(--serif);
+  font-size: clamp(22px, 4vw, 30px);
+  line-height: 1.25;
+  margin: 0 0 20px;
+  color: var(--text);
+}
+
+.closing__note {
+  max-width: 44ch;
+  color: var(--muted);
+  font-size: 15px;
+  margin: 0 0 36px;
+}
+
+.back-to-start {
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--rail-strong);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  padding: 10px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease-out,
+    background-color 0.15s ease-out;
+}
+
+.back-to-start:hover {
+  border-color: var(--accent);
+  background: rgba(217, 140, 74, 0.08);
+}
+
+.back-to-start:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ── Small screens ───────────────────────────────────────────────────────── */
+
+@media (max-width: 540px) {
+  :root {
+    --year-col: 48px;
+    --gutter: 16px;
+  }
+
+  body {
+    font-size: 15px;
+  }
+
+  .row--event .row__year {
+    font-size: 22px;
+  }
+
+  .readout__alt {
+    display: none;
+  }
+}
+
+/* ── Reduced motion ──────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  body {
+    transition: none;
+  }
+}

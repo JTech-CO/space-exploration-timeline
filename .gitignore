@@ -1,0 +1,13 @@
+node_modules
+dist
+dist-ssr
+e2e-out.txt
+*.local
+.DS_Store
+.vite
+
+# Editor / tooling
+.vscode/*
+!.vscode/extensions.json
+.idea
+.claude/
