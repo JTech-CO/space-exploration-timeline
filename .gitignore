@@ -15,3 +15,5 @@ blog-text.md
 !.vscode/extensions.json
 .idea
 .claude/
+/.npm-cache/
+/artifacts/
