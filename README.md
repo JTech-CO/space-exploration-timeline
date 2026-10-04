@@ -2,6 +2,8 @@
 
 A bottom-to-top, trilingual visual history of humanity's study, discovery, and exploration of space. Start with ancient astronomy at the bottom and scroll upward through the scientific revolution, the rocket age, lunar exploration, and recent missions.
 
+[![Space Exploration Timeline — a visual ascent from early astronomy to Voyager and Webb](public/og-space-exploration-timeline.png)](https://jtech-co.github.io/space-exploration-timeline/)
+
 [Live site](https://jtech-co.github.io/space-exploration-timeline/) · [한국어 README](README-KR.md)
 
 ## Experience

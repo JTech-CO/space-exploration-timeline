@@ -2,6 +2,8 @@
 
 인류의 우주 연구·발견·탐사 역사를 아래에서 위로 읽는 3개 언어 시각화 웹입니다. 맨 아래의 고대 천문학에서 출발해 과학 혁명, 로켓 시대, 달 탐사와 최근의 우주 임무까지 올라갑니다.
 
+[![우주 탐사 연표 — 고대의 천문 관측에서 보이저와 웹 우주망원경까지 이어지는 역사](public/og-space-exploration-timeline.png)](https://jtech-co.github.io/space-exploration-timeline/)
+
 [라이브 사이트](https://jtech-co.github.io/space-exploration-timeline/) · [English README](README.md)
 
 ## 주요 기능
